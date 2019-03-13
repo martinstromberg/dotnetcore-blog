@@ -1,0 +1,9 @@
+# General C#
+**/bin/
+**/obj/
+
+# Visual Studio
+.vs/
+
+# Visual Studio Code
+*.code-workspace
