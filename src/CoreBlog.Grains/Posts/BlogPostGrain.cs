@@ -2,7 +2,7 @@ using Orleans;
 using System.Threading.Tasks;
 
 namespace CoreBlog.Grains {
-    using GrainModels;
+    using GrainModels.Posts;
     using Abstractions.Posts;
 
     public class BlogPostGrain : Grain, IBlogPostGrain {
@@ -12,7 +12,7 @@ namespace CoreBlog.Grains {
             return Task.FromResult<BlogPost>(null);
         }
 
-        public Task Store(BlogPost blogPost) {
+        public Task Update(BlogPost blogPost) {
             return Task.CompletedTask;
         }
     }

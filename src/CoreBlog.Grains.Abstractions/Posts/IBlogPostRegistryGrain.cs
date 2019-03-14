@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CoreBlog.Grains.Abstractions.Posts
 {
-    using GrainModels;
+    using GrainModels.Posts;
     
     public interface IBlogPostRegistryGrain : IGrainWithIntegerKey
     {

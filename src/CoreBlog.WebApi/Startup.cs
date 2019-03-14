@@ -10,9 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using CoreBlog.GraphQL;
-using CoreBlog.GrainClientServices;
-using CoreBlog.GrainClientServices.Abstractions;
 using GraphQL.Types;
 using GraphQL;
 using GraphQL.Server;
@@ -23,6 +20,10 @@ using System.Threading;
 
 namespace CoreBlog.WebApi
 {
+    using GrainClientServices;
+    using GrainClientServices.Abstractions;
+    using GraphQL;
+    using GraphQL.Schema;
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -35,7 +36,8 @@ namespace CoreBlog.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             // Services
-            services.AddSingleton<IBlogPostService, BlogPostService>();
+            services.AddScoped<IBlogPostService, BlogPostService>();
+            services.AddScoped<IUserService, UserService>();
 
             // Add GraphQL
             services
@@ -99,7 +101,7 @@ namespace CoreBlog.WebApi
                 app.UseHsts();
             }
 
-            app.UseGraphQL<GraphQL.Schema.BlogPostsSchema>();
+            app.UseGraphQL<BlogSchema>();
             app.UseGraphQLPlayground(new GraphQLPlaygroundOptions());
 
             app.UseHttpsRedirection();

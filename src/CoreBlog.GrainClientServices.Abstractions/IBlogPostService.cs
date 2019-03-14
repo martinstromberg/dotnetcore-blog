@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CoreBlog.GrainClientServices.Abstractions {
-    using GrainModels;
+    using GrainModels.Posts;
 
     public interface IBlogPostService {
         BlogPost GetPostById(Guid id);

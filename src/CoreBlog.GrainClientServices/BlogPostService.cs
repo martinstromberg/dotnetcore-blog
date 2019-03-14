@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CoreBlog.GrainClientServices {
     using Abstractions;
-    using GrainModels;
+    using GrainModels.Posts;
     using Grains.Abstractions.Posts;
 
     public class BlogPostService : IBlogPostService {
@@ -20,10 +20,10 @@ namespace CoreBlog.GrainClientServices {
         }
 
         public Task<BlogPost> GetPostByIdAsync(Guid id) {
-            var blogPostRegistry = _clusterClient
+            var blogPost = _clusterClient
                 .GetGrain<IBlogPostGrain>(id);
 
-            return blogPostRegistry.Find();
+            return blogPost.Find();
         }
 
         public Task<IEnumerable<BlogPost>> GetBlogPostsAsync() {

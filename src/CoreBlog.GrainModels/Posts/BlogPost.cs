@@ -1,6 +1,6 @@
 using System;
 
-namespace CoreBlog.GrainModels {
+namespace CoreBlog.GrainModels.Posts {
     public class BlogPost {
         public Guid BlogPostId { get; set; }
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoreBlog.Grains {
-    using GrainModels;
+    using GrainModels.Posts;
     using Abstractions.Posts;
 
     public class BlogPostRegistryGrain : Grain, IBlogPostRegistryGrain {
