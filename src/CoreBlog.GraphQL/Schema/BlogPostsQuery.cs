@@ -1,7 +1,7 @@
 using GraphQL.Types;
 
 namespace CoreBlog.GraphQL.Schema {
-    using Services;
+    using GrainClientServices.Abstractions;
     using Types;
 
     public class BlogPostsQuery : ObjectGraphType<object> {

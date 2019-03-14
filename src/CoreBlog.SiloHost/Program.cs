@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
@@ -25,8 +26,7 @@ namespace CoreBlog.SiloHost {
             return builder;
         }
 
-        static void Main(string[] args)
-        {
+        static void Main(string[] args) {
             new SiloHostBuilder()
                 .SetClusteringEnvironment()
                 .Configure<ClusterOptions>(options => {
@@ -47,6 +47,8 @@ namespace CoreBlog.SiloHost {
                             : LogLevel.Warning)
                         .AddConsole();
                 })
+
+                .ConfigureServices(ConfigureServices)
 
                 .UseDashboard(options => {
                     options.Host = "*";
@@ -69,6 +71,10 @@ namespace CoreBlog.SiloHost {
                 });
 
             resetEvent.WaitOne();
+        }
+
+        static void ConfigureServices(HostBuilderContext context, IServiceCollection services) {
+            
         }
     }
 }

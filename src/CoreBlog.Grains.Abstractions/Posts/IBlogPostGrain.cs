@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 
 namespace CoreBlog.Grains.Abstractions.Posts
 {
-    using Data.Abstractions;
+    using GrainModels;
     
     public interface IBlogPostGrain : IGrainWithGuidKey
     {
-        Task<IBlogPost> Find();
-        Task Store(IBlogPost blogPost);
+        Task<BlogPost> Find();
+        Task Store(BlogPost blogPost);
     }
 }

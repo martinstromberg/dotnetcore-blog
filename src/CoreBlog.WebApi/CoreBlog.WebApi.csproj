@@ -12,10 +12,18 @@
     <PackageReference Include="GraphQL.Server.Ui.Playground" Version="3.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Orleans.Client" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Orleans.OrleansCodeGenerator.Build" Version="2.2.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CoreBlog.GraphQL\CoreBlog.GraphQL.csproj" />
+    <ProjectReference Include="..\CoreBlog.Grains.Abstractions\CoreBlog.Grains.Abstractions.csproj" />
+    <ProjectReference Include="..\CoreBlog.GrainClientServices.Abstractions\CoreBlog.GrainClientServices.Abstractions.csproj" />
+    <ProjectReference Include="..\CoreBlog.GrainClientServices\CoreBlog.GrainClientServices.csproj" />
   </ItemGroup>
 
 </Project>

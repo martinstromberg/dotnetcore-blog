@@ -4,6 +4,7 @@
 
 # Visual Studio
 .vs/
+.vscode/
 
 # Visual Studio Code
 *.code-workspace

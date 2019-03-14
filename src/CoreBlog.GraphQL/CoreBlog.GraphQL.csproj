@@ -6,11 +6,13 @@
 
   <ItemGroup>
     <PackageReference Include="GraphQL" Version="2.4.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
     <PackageReference Include="System.Reactive" Version="4.1.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CoreBlog.Data.Abstractions\CoreBlog.Data.Abstractions.csproj" />
+    <ProjectReference Include="..\CoreBlog.GrainModels\CoreBlog.GrainModels.csproj" />
+    <ProjectReference Include="..\CoreBlog.GrainClientServices.Abstractions\CoreBlog.GrainClientServices.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

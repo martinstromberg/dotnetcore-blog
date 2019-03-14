@@ -10,13 +10,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using CoreBlog.GraphQL.Services;
-using CoreBlog.GraphQL.Types;
+using CoreBlog.GraphQL;
+using CoreBlog.GrainClientServices;
+using CoreBlog.GrainClientServices.Abstractions;
 using GraphQL.Types;
 using GraphQL;
 using GraphQL.Server;
 using GraphQL.Server.Ui.Playground;
-using CoreBlog.GraphQL.Schema;
+using Orleans;
+using Orleans.Configuration;
+using System.Threading;
 
 namespace CoreBlog.WebApi
 {
@@ -34,23 +37,53 @@ namespace CoreBlog.WebApi
             // Services
             services.AddSingleton<IBlogPostService, BlogPostService>();
 
-            // Types
-            services.AddSingleton<GuidGraphType>();
-            services.AddSingleton<BlogPostType>();
-
-            // Query
-            services.AddSingleton<BlogPostsQuery>();
-
-            // Schema
-            services.AddSingleton<BlogPostsSchema>();
-
-            // Dependency Resolver
-            services.AddSingleton<IDependencyResolver>(provider => 
-                new FuncDependencyResolver(provider.GetRequiredService));
-
             // Add GraphQL
-            services.AddGraphQL(options => { options.ExposeExceptions = true; })
+            services
+                .AddGraphQLServices()
+                .AddGraphQL(options => { options.ExposeExceptions = true; })
                 .AddGraphTypes(ServiceLifetime.Singleton);
+
+            // Add Orleans
+            services.AddSingleton<IClusterClient>(provider => {
+                var hostingEnvironment = provider.GetRequiredService<IHostingEnvironment>();
+
+                var clientBuilder = new ClientBuilder()
+                    .Configure<ClusterOptions>(options => {
+                        options.ClusterId = "dev";
+                        options.ServiceId = "CoreBlog";
+                    })
+                    .ConfigureApplicationParts(parts => {
+                        parts.AddFromApplicationBaseDirectory();
+                    });
+
+                if (hostingEnvironment.IsDevelopment()) {
+                    clientBuilder = clientBuilder.UseLocalhostClustering();
+                }
+
+                var client = clientBuilder.Build();
+                var reset = new ManualResetEvent(false);
+
+                client.Connect(RetryFilter).ContinueWith(task => {
+                    reset.Set();
+
+                    return Task.CompletedTask;
+                });
+
+                reset.WaitOne();
+
+                return client;
+
+                async Task<bool> RetryFilter(Exception exception) {
+                    provider.GetService<ILogger>()?.LogWarning(
+                        exception, 
+                        "Exception while attempting to connect to Orleans cluster"
+                    );
+
+                    await Task.Delay(TimeSpan.FromSeconds(2));
+
+                    return true;
+                }
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -66,7 +99,7 @@ namespace CoreBlog.WebApi
                 app.UseHsts();
             }
 
-            app.UseGraphQL<BlogPostsSchema>();
+            app.UseGraphQL<GraphQL.Schema.BlogPostsSchema>();
             app.UseGraphQLPlayground(new GraphQLPlaygroundOptions());
 
             app.UseHttpsRedirection();
