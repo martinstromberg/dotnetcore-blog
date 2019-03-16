@@ -4,24 +4,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CoreBlog.Grains {
-    using GrainModels.Posts;
+namespace CoreBlog.Grains.Posts {
     using Abstractions.Posts;
+    using Data.Abstractions.Posts;
+    using GrainModels.Posts;
 
     public class BlogPostRegistryGrain : Grain, IBlogPostRegistryGrain {
-        private readonly System.Collections.Generic.ISet<BlogPost> _posts;
+        private readonly IBlogPostRepository _blogPostRepository;
 
-        public BlogPostRegistryGrain() {
-            _posts = new System.Collections.Generic.HashSet<BlogPost>();
-            _posts.Add(new BlogPost { Title = "Hello, world!", Content = "This is my first post." });
-            _posts.Add(new BlogPost { Title = "Hello, Orleans!", Content = "This is my second post." });
-            _posts.Add(new BlogPost { Title = "Hello, GraphQL!", Content = "This is my third post." });
+        public BlogPostRegistryGrain(IBlogPostRepository blogPostRepository) {
+            _blogPostRepository = blogPostRepository;
         }
 
-        public Task<IEnumerable<BlogPost>> Query() {
-            var blogPostId = this.GetPrimaryKey();
-
-            return Task.FromResult(_posts.AsEnumerable());
+        public async Task<IEnumerable<BlogPost>> Query() {
+            return (await _blogPostRepository.Query())
+                .Select(IBlogPostExtensionMethods.ToGrainModel)
+                .ToList();
         }
 
         public Task<Guid> Add(BlogPost blogPost) {

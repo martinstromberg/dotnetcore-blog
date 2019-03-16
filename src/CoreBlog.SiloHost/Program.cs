@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
+using Microsoft.Extensions.Hosting.Internal;
 using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
@@ -8,6 +12,7 @@ using System.Net;
 using System.Threading;
 
 namespace CoreBlog.SiloHost {
+    using Data.EntityFramework;
     using Grains;
 
     public static class Program {
@@ -26,43 +31,51 @@ namespace CoreBlog.SiloHost {
             return builder;
         }
 
+        static IConfiguration Configuration;
+        static IHostingEnvironment HostingEnvironment;
         static void Main(string[] args) {
-            new SiloHostBuilder()
+            HostingEnvironment = GetHostingEnvironment();
+            Configuration = GetConfiguration(HostingEnvironment, args);
+
+            Console.WriteLine(Configuration["Logging.LogLevel.Default"]);
+            return;
+
+            var siloHostBuilder = new SiloHostBuilder()
                 .SetClusteringEnvironment()
                 .Configure<ClusterOptions>(options => {
-                    options.ClusterId = "dev";
-                    options.ServiceId = "CoreBlog";
+                    options.ClusterId = Configuration["Orleans.ClusterId"];
+                    options.ServiceId = Configuration["Orleans.ServiceId"];
                 })
                 .Configure<EndpointOptions>(options => {
                     options.AdvertisedIPAddress = IPAddress.Loopback;
                 })
                 .ConfigureApplicationParts(parts => {
-                    parts.AddApplicationPart(typeof(BlogPostGrain).Assembly).WithReferences();
+                    parts.AddApplicationPart(typeof(Grains.Posts.BlogPostGrain).Assembly).WithReferences();
                 })
 
                 .ConfigureLogging(logging => {
                     logging
-                        .SetMinimumLevel(_environment == DevelopmentEnvironment
-                            ? LogLevel.Information
-                            : LogLevel.Warning)
+                        .AddConfiguration(Configuration)
                         .AddConsole();
                 })
 
-                .ConfigureServices(ConfigureServices)
+                .ConfigureServices(ConfigureServices);
 
-                .UseDashboard(options => {
-                    options.Host = "*";
-                    options.Port = 8089;
+            if (Configuration.GetValue<bool>("OrleansDashboard.Enabled", false)) {
+                siloHostBuilder = siloHostBuilder.UseDashboard(options => {
+                    options.Host = Configuration["OrleansDashboard.Host"];
+                    options.Port = Configuration.GetValue<int>("OrleansDashboard.Port");
 
-                    options.Username = "admin";
-                    options.Password = "admin";
+                    options.Username = Configuration["OrleansDashboard.Username"];
+                    options.Password = Configuration["OrleansDashboard.Password"];
 
-                    options.CounterUpdateIntervalMs = (int)TimeSpan.FromSeconds(1).TotalMilliseconds;
-                })
+                    options.CounterUpdateIntervalMs = Configuration.GetValue<int>("OrleansDashboard.UpdateInterval");
+                });
+            }
 
-                .Build()
+            var siloHost = siloHostBuilder.Build();
                 
-                .StartAsync()
+            siloHost.StartAsync()
                 
                 .ContinueWith(task => {
                     Console.WriteLine("CoreBlog SiloHost is running...");
@@ -74,7 +87,38 @@ namespace CoreBlog.SiloHost {
         }
 
         static void ConfigureServices(HostBuilderContext context, IServiceCollection services) {
-            
+            services.AddSingleton<IConfiguration>(Configuration);
+            services.AddEntityFrameworkBloggingServices(Configuration);
+        }
+
+        static IHostingEnvironment GetHostingEnvironment() {
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var fileProvider = new PhysicalFileProvider(baseDirectory);
+
+            return new HostingEnvironment {
+                ApplicationName = AppDomain.CurrentDomain.FriendlyName,
+                ContentRootFileProvider = fileProvider,
+                ContentRootPath = baseDirectory,
+                EnvironmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? DevelopmentEnvironment
+            };
+        }
+
+        static IConfiguration GetConfiguration(IHostingEnvironment hostingEnvironment, string[] args) {
+            return new ConfigurationBuilder()
+                .SetBasePath(hostingEnvironment.ContentRootPath)
+                .AddJsonFile(
+                    provider: hostingEnvironment.ContentRootFileProvider,
+                    path: "appsettings.json",
+                    optional: false, 
+                    reloadOnChange: true)
+                .AddJsonFile(
+                    provider: hostingEnvironment.ContentRootFileProvider,
+                    path: $"appsettings.{hostingEnvironment.EnvironmentName}.json", 
+                    optional: true, 
+                    reloadOnChange: true)
+                //.AddEnvironmentVariables(prefix: "ENVIRONMENT_")
+                //.AddCommandLine(args)
+                .Build();
         }
     }
 }
