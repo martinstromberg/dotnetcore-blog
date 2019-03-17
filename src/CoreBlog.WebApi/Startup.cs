@@ -21,11 +21,13 @@ namespace CoreBlog.WebApi {
     using GraphQL.Schema;
 
     public class Startup {
-        public Startup(IConfiguration configuration) {
+        public Startup(IHostingEnvironment hostingEnvironment, IConfiguration configuration) {
             Configuration = configuration;
+            HostingEnvironment = hostingEnvironment;
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment HostingEnvironment { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -44,7 +46,7 @@ namespace CoreBlog.WebApi {
             services
                 .AddGraphQLServices()
                 .AddGraphQL(options => {
-                    options.ExposeExceptions = true;
+                    options.ExposeExceptions = HostingEnvironment.IsDevelopment();
                 })
                 .AddGraphTypes(ServiceLifetime.Singleton);
 
