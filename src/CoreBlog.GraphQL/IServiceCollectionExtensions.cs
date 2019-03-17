@@ -9,18 +9,22 @@ namespace CoreBlog.GraphQL {
     public static class IServiceCollectionExtensions {
         public static IServiceCollection AddGraphQLServices(this IServiceCollection services) {
             // Types
-            services.AddScoped<GuidGraphType>();
-            services.AddScoped<BlogPostType>();
-            services.AddScoped<UserType>();
+            services.AddSingleton<GuidGraphType>();
 
-            // Query
-            services.AddScoped<BlogQuery>();
+            services.AddSingleton<BlogPostType>();
+            services.AddSingleton<BlogPostInputType>();
+
+            services.AddSingleton<UserType>();
+
+            // Query & Mutation
+            services.AddSingleton<BlogQuery>();
+            services.AddSingleton<BlogMutation>();
 
             // Schema
-            services.AddScoped<BlogSchema>();
+            services.AddSingleton<BlogSchema>();
 
             // Dependency Resolver
-            services.AddScoped<IDependencyResolver>(provider => 
+            services.AddSingleton<IDependencyResolver>(provider => 
                 new FuncDependencyResolver(provider.GetRequiredService));
 
             return services;

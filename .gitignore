@@ -4,7 +4,8 @@
 
 # Visual Studio
 .vs/
-.vscode/
+*.csproj.user
 
 # Visual Studio Code
 *.code-workspace
+.vscode/

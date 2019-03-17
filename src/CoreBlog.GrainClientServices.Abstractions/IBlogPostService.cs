@@ -6,9 +6,11 @@ namespace CoreBlog.GrainClientServices.Abstractions {
     using GrainModels.Posts;
 
     public interface IBlogPostService {
+        Task<IEnumerable<BlogPost>> GetBlogPostsAsync();
+
         BlogPost GetPostById(Guid id);
         Task<BlogPost> GetPostByIdAsync(Guid id);
 
-        Task<IEnumerable<BlogPost>> GetBlogPostsAsync();
+        Task<Guid> CreatePost(BlogPost post);
     }
 }

@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CoreBlog.Grains.Abstractions\CoreBlog.Grains.Abstractions.csproj" />
     <ProjectReference Include="..\CoreBlog.GrainModels\CoreBlog.GrainModels.csproj" />
+    <ProjectReference Include="..\CoreBlog.Data.Abstractions\CoreBlog.Data.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -14,7 +15,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
 </Project>
