@@ -16,6 +16,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <UseNETCoreGenerator>true</UseNETCoreGenerator>
   </PropertyGroup>
 
 </Project>
