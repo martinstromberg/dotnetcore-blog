@@ -7,6 +7,10 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Orleans.CodeGeneration;
+
+[assembly: KnownAssembly(typeof(CoreBlog.GrainClientServices.BlogPostService))]
+[assembly: KnownAssembly(typeof(CoreBlog.Grains.Abstractions.Posts.IBlogPostGrain))]
 
 namespace CoreBlog.WebApi
 {
