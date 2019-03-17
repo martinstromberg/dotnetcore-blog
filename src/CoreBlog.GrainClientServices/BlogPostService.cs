@@ -11,6 +11,13 @@ namespace CoreBlog.GrainClientServices {
     public class BlogPostService : IBlogPostService {
         private readonly IClusterClient _clusterClient;
 
+        public Task<IEnumerable<BlogPost>> GetBlogPostsAsync() {
+            var blogPostRegistry = _clusterClient
+                .GetGrain<IBlogPostRegistryGrain>(0);
+
+            return blogPostRegistry.Query();
+        }
+
         public BlogPostService(IClusterClient clusterClient) {
             _clusterClient = clusterClient;
         }
@@ -26,11 +33,11 @@ namespace CoreBlog.GrainClientServices {
             return blogPost.Find();
         }
 
-        public Task<IEnumerable<BlogPost>> GetBlogPostsAsync() {
-            var blogPostRegistry = _clusterClient
+        public async Task<Guid> CreatePost(BlogPost post) {
+            var registry = _clusterClient
                 .GetGrain<IBlogPostRegistryGrain>(0);
 
-            return blogPostRegistry.Query();
+            return await registry.Add(post);
         }
     }
 }

@@ -6,14 +6,16 @@ using System;
 namespace CoreBlog.Data.EntityFramework {
     using Abstractions.Posts;
     using Posts;
+    using Abstractions.Users;
+    using Users;
 
     public static class IServiceCollectionExtensions {
         public static IServiceCollection AddEntityFrameworkBloggingServices(
             this IServiceCollection services, IConfiguration configuration) {
                 var stringComparer = StringComparer.InvariantCultureIgnoreCase;
 
-                var databaseProvider = configuration["Database.Provider"];
-                var connectionString = configuration.GetConnectionString("BlogingDatabase");
+                var databaseProvider = configuration["Database:Provider"];
+                var connectionString = configuration.GetConnectionString("BloggingDatabase");
                 
                 return services
                 
@@ -27,7 +29,9 @@ namespace CoreBlog.Data.EntityFramework {
                         }
                     })
 
-                    .AddTransient<IBlogPostRepository, BlogPostRepository>();
+                    .AddTransient<IBlogPostRepository, BlogPostRepository>()
+                    .AddTransient<IUserRepository, UserRepository>()
+                ;
             }
     }
 }

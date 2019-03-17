@@ -1,33 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using GraphQL.Types;
-using GraphQL;
 using GraphQL.Server;
 using GraphQL.Server.Ui.Playground;
+using GraphQL.Server.Transports.AspNetCore;
+using GraphQL.Server.Transports.AspNetCore.Internal;
 using Orleans;
 using Orleans.Configuration;
 using System.Threading;
 
-namespace CoreBlog.WebApi
-{
+namespace CoreBlog.WebApi {
     using GrainClientServices;
     using GrainClientServices.Abstractions;
     using GraphQL;
     using GraphQL.Schema;
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
+
+    public class Startup {
+        public Startup(IConfiguration configuration) {
             Configuration = configuration;
         }
 
@@ -36,13 +30,22 @@ namespace CoreBlog.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             // Services
-            services.AddScoped<IBlogPostService, BlogPostService>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<IBlogPostService, BlogPostService>();
+            services.AddSingleton<IUserService, UserService>();
+
+            // Auth
+            services.AddSingleton<IUserContextBuilder>(
+                new UserContextBuilder<object>(context => {
+                    return new object();
+                })
+            );
 
             // Add GraphQL
             services
                 .AddGraphQLServices()
-                .AddGraphQL(options => { options.ExposeExceptions = true; })
+                .AddGraphQL(options => {
+                    options.ExposeExceptions = true;
+                })
                 .AddGraphTypes(ServiceLifetime.Singleton);
 
             // Add Orleans

@@ -20,5 +20,18 @@ namespace CoreBlog.Data.EntityFramework.Posts {
         public async Task<IEnumerable<IBlogPost>> Query() {
             return await _databaseContext.Posts.ToListAsync();
         }
+
+        public async Task<Guid> Add(IBlogPost post) {
+            var entity = post.CopyTo(new BlogPost());
+
+            entity.BlogPostId = Guid.NewGuid();
+            entity.Created = DateTime.UtcNow;
+            entity.LastUpdated = DateTime.UtcNow;
+            
+            _databaseContext.Posts.Add(entity);
+            await _databaseContext.SaveChangesAsync();
+
+            return entity.BlogPostId;
+        }
     }
 }

@@ -16,56 +16,58 @@ namespace CoreBlog.Data.EntityFramework {
         }
 
         protected void ConfigureUsers(ModelBuilder modelBuilder) {
-            // Primary key
-            modelBuilder.Entity<User>()
-                .HasKey(post => post.UserId);
+            modelBuilder.Entity<User>(entity => {
+                // Primary key
+                entity.HasKey(post => post.UserId);
 
-            // Field definitions
-            modelBuilder.Entity<User>()
-                .Property(user => user.DisplayName)
-                .HasMaxLength(128)
-                .IsRequired();
+                // Field definitions
+                entity
+                    .Property(user => user.DisplayName)
+                    .HasMaxLength(128)
+                    .IsRequired();
 
-            modelBuilder.Entity<User>()
-                .Property(user => user.EmailAddress)
-                .HasMaxLength(265)
-                .IsRequired();
+                entity
+                    .Property(user => user.EmailAddress)
+                    .HasMaxLength(265)
+                    .IsRequired();
 
-            modelBuilder.Entity<User>()
-                .Property(user => user.Password)
-                .IsRequired();
+                entity
+                    .Property(user => user.Password)
+                    .IsRequired();
 
-            modelBuilder.Entity<User>()
-                .Property(user => user.PasswordFormat)
-                .IsRequired();
+                entity
+                    .Property(user => user.PasswordFormat)
+                    .IsRequired();
 
-            modelBuilder.Entity<User>()
-                .Property(user => user.PasswordUpdated)
-                .IsRequired();
+                entity
+                    .Property(user => user.PasswordUpdated)
+                    .IsRequired();
 
-            // Foreign keys
-            modelBuilder.Entity<User>()
-                .HasMany(user => user.AuthoredPosts)
-                .WithOne(post => post.Author)
-                .HasPrincipalKey(user => user.UserId)
-                .HasForeignKey(post => post.AuthorId);
+                // Foreign keys
+                entity
+                    .HasMany(user => user.AuthoredPosts)
+                    .WithOne(post => post.Author)
+                    .HasPrincipalKey(user => user.UserId)
+                    .HasForeignKey(post => post.AuthorId);
 
-            // Indexes
-            modelBuilder.Entity<User>()
-                .HasIndex(user => user.EmailAddress)
-                .IsUnique();
+                // Indexes
+                entity
+                    .HasIndex(user => user.EmailAddress)
+                    .IsUnique();
 
-            // Seed
-            modelBuilder.Entity<User>().HasData(
-                new User { 
-                    UserId = Guid.Parse("23a9dbd8-474b-4bf3-a39e-f16dc0c078fc"), 
-                    DisplayName = "Blogger Bob", 
-                    EmailAddress = "bob@blog.local",
-                    Password = "changeme",
-                    PasswordFormat = 1,
-                    PasswordUpdated = DateTime.UtcNow
-                }
-            );
+                // Seed
+                entity.HasData(
+                    new User
+                    {
+                        UserId = Guid.Parse("23a9dbd8-474b-4bf3-a39e-f16dc0c078fc"),
+                        DisplayName = "Blogger Bob",
+                        EmailAddress = "bob@blog.local",
+                        Password = "changeme",
+                        PasswordFormat = 1,
+                        PasswordUpdated = DateTime.UtcNow
+                    }
+                );
+            });
         }
 
         protected void ConfigureBlogPosts(ModelBuilder modelBuilder) {

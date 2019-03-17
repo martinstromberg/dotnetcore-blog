@@ -1,28 +1,26 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Net;
+using System.Threading;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 using Microsoft.Extensions.Hosting.Internal;
+using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
-using System;
-using System.Net;
-using System.Threading;
+using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 
 namespace CoreBlog.SiloHost {
     using Data.EntityFramework;
-    using Grains;
 
     public static class Program {
         const string DevelopmentEnvironment = "Development";
-        static readonly string _environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? DevelopmentEnvironment;
 
         static readonly ManualResetEvent resetEvent = new ManualResetEvent(false);
 
         static ISiloHostBuilder SetClusteringEnvironment(this ISiloHostBuilder builder) {
-            if (_environment == DevelopmentEnvironment) {
+            if (HostingEnvironment.EnvironmentName == DevelopmentEnvironment) {
                 return builder.UseLocalhostClustering();
             }
 
@@ -37,14 +35,11 @@ namespace CoreBlog.SiloHost {
             HostingEnvironment = GetHostingEnvironment();
             Configuration = GetConfiguration(HostingEnvironment, args);
 
-            Console.WriteLine(Configuration["Logging.LogLevel.Default"]);
-            return;
-
             var siloHostBuilder = new SiloHostBuilder()
                 .SetClusteringEnvironment()
                 .Configure<ClusterOptions>(options => {
-                    options.ClusterId = Configuration["Orleans.ClusterId"];
-                    options.ServiceId = Configuration["Orleans.ServiceId"];
+                    options.ClusterId = Configuration["Orleans:ClusterId"];
+                    options.ServiceId = Configuration["Orleans:ServiceId"];
                 })
                 .Configure<EndpointOptions>(options => {
                     options.AdvertisedIPAddress = IPAddress.Loopback;
@@ -61,15 +56,15 @@ namespace CoreBlog.SiloHost {
 
                 .ConfigureServices(ConfigureServices);
 
-            if (Configuration.GetValue<bool>("OrleansDashboard.Enabled", false)) {
+            if (Configuration.GetValue<bool>("OrleansDashboard:Enabled", false)) {
                 siloHostBuilder = siloHostBuilder.UseDashboard(options => {
-                    options.Host = Configuration["OrleansDashboard.Host"];
-                    options.Port = Configuration.GetValue<int>("OrleansDashboard.Port");
+                    options.Host = Configuration["OrleansDashboard:Host"];
+                    options.Port = Configuration.GetValue<int>("OrleansDashboard:Port");
 
-                    options.Username = Configuration["OrleansDashboard.Username"];
-                    options.Password = Configuration["OrleansDashboard.Password"];
+                    options.Username = Configuration["OrleansDashboard:Username"];
+                    options.Password = Configuration["OrleansDashboard:Password"];
 
-                    options.CounterUpdateIntervalMs = Configuration.GetValue<int>("OrleansDashboard.UpdateInterval");
+                    options.CounterUpdateIntervalMs = Configuration.GetValue<int>("OrleansDashboard:UpdateInterval", 1000);
                 });
             }
 
@@ -88,6 +83,13 @@ namespace CoreBlog.SiloHost {
 
         static void ConfigureServices(HostBuilderContext context, IServiceCollection services) {
             services.AddSingleton<IConfiguration>(Configuration);
+            services.AddSingleton<IHostingEnvironment>(HostingEnvironment);
+            
+            services.AddSingleton(new LoggerFactory());
+            services.AddLogging(logging => {
+                logging.AddConsole();
+            });
+
             services.AddEntityFrameworkBloggingServices(Configuration);
         }
 
@@ -116,8 +118,8 @@ namespace CoreBlog.SiloHost {
                     path: $"appsettings.{hostingEnvironment.EnvironmentName}.json", 
                     optional: true, 
                     reloadOnChange: true)
-                //.AddEnvironmentVariables(prefix: "ENVIRONMENT_")
-                //.AddCommandLine(args)
+                .AddEnvironmentVariables(prefix: "ENVIRONMENT_")
+                .AddCommandLine(args)
                 .Build();
         }
     }

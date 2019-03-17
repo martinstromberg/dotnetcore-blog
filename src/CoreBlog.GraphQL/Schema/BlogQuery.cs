@@ -1,3 +1,4 @@
+using System;
 using GraphQL.Types;
 
 namespace CoreBlog.GraphQL.Schema {
@@ -11,6 +12,19 @@ namespace CoreBlog.GraphQL.Schema {
             Field<ListGraphType<BlogPostType>>(
                 "posts",
                 resolve: context => blogPosts.GetBlogPostsAsync()
+            );
+
+            Field<BlogPostType>(
+                "post",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<GuidGraphType>> {
+                        Name = "id",
+                        Description = "The ID of the post to fetch"
+                    }
+                ),
+                resolve: context => blogPosts.GetPostByIdAsync(
+                    context.GetArgument<Guid>("id")
+                )
             );
         }
     }

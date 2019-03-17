@@ -18,12 +18,13 @@ namespace CoreBlog.Grains.Posts {
 
         public async Task<IEnumerable<BlogPost>> Query() {
             return (await _blogPostRepository.Query())
-                .Select(IBlogPostExtensionMethods.ToGrainModel)
+                .Select(ModelExtensionMethods.ToGrainModel)
                 .ToList();
         }
 
         public Task<Guid> Add(BlogPost blogPost) {
-            return Task.FromResult(Guid.NewGuid());
+            return _blogPostRepository
+                .Add(blogPost.ToDataModel());
         }
     }
 }

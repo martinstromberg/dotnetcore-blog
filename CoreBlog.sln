@@ -13,15 +13,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreBlog.Grains", "src\Core
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreBlog.SiloHost", "src\CoreBlog.SiloHost\CoreBlog.SiloHost.csproj", "{13B5F6E5-54EB-4C28-A2D9-D683DD71DC16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreBlog.WebApi", "src\CoreBlog.WebApi\CoreBlog.WebApi.csproj", "{083104B3-E35A-4DE5-8534-A20CE71B596D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreBlog.WebApi", "src\CoreBlog.WebApi\CoreBlog.WebApi.csproj", "{083104B3-E35A-4DE5-8534-A20CE71B596D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreBlog.GraphQL", "src\CoreBlog.GraphQL\CoreBlog.GraphQL.csproj", "{7C9CEBC7-7C6A-4AC2-8143-2170B4412C99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreBlog.GraphQL", "src\CoreBlog.GraphQL\CoreBlog.GraphQL.csproj", "{7C9CEBC7-7C6A-4AC2-8143-2170B4412C99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreBlog.GrainClientServices.Abstractions", "src\CoreBlog.GrainClientServices.Abstractions\CoreBlog.GrainClientServices.Abstractions.csproj", "{A40376DF-7F37-4C90-8528-031BD7C4188A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreBlog.GrainClientServices.Abstractions", "src\CoreBlog.GrainClientServices.Abstractions\CoreBlog.GrainClientServices.Abstractions.csproj", "{A40376DF-7F37-4C90-8528-031BD7C4188A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreBlog.GrainClientServices", "src\CoreBlog.GrainClientServices\CoreBlog.GrainClientServices.csproj", "{3CF9D192-164E-4509-B72B-8EB70ABC4566}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreBlog.GrainClientServices", "src\CoreBlog.GrainClientServices\CoreBlog.GrainClientServices.csproj", "{3CF9D192-164E-4509-B72B-8EB70ABC4566}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreBlog.GrainModels", "src\CoreBlog.GrainModels\CoreBlog.GrainModels.csproj", "{FE24B3AE-2CB4-4200-941C-475CBE13E924}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreBlog.GrainModels", "src\CoreBlog.GrainModels\CoreBlog.GrainModels.csproj", "{FE24B3AE-2CB4-4200-941C-475CBE13E924}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreBlog.Data.EntityFramework", "src\CoreBlog.Data.EntityFramework\CoreBlog.Data.EntityFramework.csproj", "{7A4B7AF6-26D5-41AB-95FC-4756FB323E1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -141,6 +143,18 @@ Global
 		{FE24B3AE-2CB4-4200-941C-475CBE13E924}.Release|x64.Build.0 = Release|Any CPU
 		{FE24B3AE-2CB4-4200-941C-475CBE13E924}.Release|x86.ActiveCfg = Release|Any CPU
 		{FE24B3AE-2CB4-4200-941C-475CBE13E924}.Release|x86.Build.0 = Release|Any CPU
+		{7A4B7AF6-26D5-41AB-95FC-4756FB323E1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A4B7AF6-26D5-41AB-95FC-4756FB323E1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A4B7AF6-26D5-41AB-95FC-4756FB323E1C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7A4B7AF6-26D5-41AB-95FC-4756FB323E1C}.Debug|x64.Build.0 = Debug|Any CPU
+		{7A4B7AF6-26D5-41AB-95FC-4756FB323E1C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7A4B7AF6-26D5-41AB-95FC-4756FB323E1C}.Debug|x86.Build.0 = Debug|Any CPU
+		{7A4B7AF6-26D5-41AB-95FC-4756FB323E1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A4B7AF6-26D5-41AB-95FC-4756FB323E1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A4B7AF6-26D5-41AB-95FC-4756FB323E1C}.Release|x64.ActiveCfg = Release|Any CPU
+		{7A4B7AF6-26D5-41AB-95FC-4756FB323E1C}.Release|x64.Build.0 = Release|Any CPU
+		{7A4B7AF6-26D5-41AB-95FC-4756FB323E1C}.Release|x86.ActiveCfg = Release|Any CPU
+		{7A4B7AF6-26D5-41AB-95FC-4756FB323E1C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,6 +169,7 @@ Global
 		{A40376DF-7F37-4C90-8528-031BD7C4188A} = {A22A2ED1-2190-4942-A8A9-AD8B095C6D24}
 		{3CF9D192-164E-4509-B72B-8EB70ABC4566} = {A22A2ED1-2190-4942-A8A9-AD8B095C6D24}
 		{FE24B3AE-2CB4-4200-941C-475CBE13E924} = {A22A2ED1-2190-4942-A8A9-AD8B095C6D24}
+		{7A4B7AF6-26D5-41AB-95FC-4756FB323E1C} = {A22A2ED1-2190-4942-A8A9-AD8B095C6D24}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C7986623-B7BF-4591-9111-B84CBAAD412A}

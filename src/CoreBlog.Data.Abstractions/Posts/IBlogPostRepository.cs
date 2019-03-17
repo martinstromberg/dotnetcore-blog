@@ -7,5 +7,7 @@ namespace CoreBlog.Data.Abstractions.Posts {
         Task<IBlogPost> FindPostByIdAsync(Guid id);
 
         Task<IEnumerable<IBlogPost>> Query();
+
+        Task<Guid> Add(IBlogPost post);
     }
 }
