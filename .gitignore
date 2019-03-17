@@ -9,3 +9,6 @@
 # Visual Studio Code
 *.code-workspace
 .vscode/
+
+# Sqlite
+**/*.db
