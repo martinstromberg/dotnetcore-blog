@@ -12,3 +12,6 @@
 
 # Sqlite
 **/*.db
+
+# Mac
+**/.DS_Store
