@@ -6,10 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Orleans.Core.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Orleans.OrleansCodeGenerator.Build" Version="2.2.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
   </ItemGroup>
 
   <PropertyGroup>

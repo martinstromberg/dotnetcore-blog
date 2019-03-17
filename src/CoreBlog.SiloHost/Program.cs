@@ -7,9 +7,13 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Logging;
 using Orleans;
+using Orleans.CodeGeneration;
 using Orleans.Configuration;
 using Orleans.Hosting;
 using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
+
+[assembly: KnownAssembly(typeof(CoreBlog.Grains.Abstractions.Posts.IBlogPostGrain))]
+[assembly: KnownAssembly(typeof(CoreBlog.Grains.Posts.BlogPostGrain))]
 
 namespace CoreBlog.SiloHost {
     using Data.EntityFramework;
