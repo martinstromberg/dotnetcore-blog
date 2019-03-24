@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Xunit;
 
 namespace CoreBlog.Data.EntityFramework.Tests {
+    using Data.Abstractions;
     using Data.Abstractions.Posts;
     using Data.Abstractions.Users;
     using Data.EntityFramework;
@@ -34,7 +35,7 @@ namespace CoreBlog.Data.EntityFramework.Tests {
         }
 
         [Fact]
-        public void AddEntityFrameworkBloggingServices_Adds_IBlogPostRepository_Implementation() {
+        public void AddEntityFrameworkBloggingServices_Adds_IUnitOfWork_Implementation() {
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string> {
                     ["ConnectionStrings:BloggingDatabase"] = "AddEntityFrameworkBloggingServices_Adds_IBlogPostRepository_Implementation"
@@ -44,12 +45,27 @@ namespace CoreBlog.Data.EntityFramework.Tests {
             var foo = services
                 .AddEntityFrameworkBloggingServices(configuration)
                 .BuildServiceProvider()
-                .GetService<IBlogPostRepository>()
+                .GetService<IUnitOfWork>()
+                .Should().NotBeNull().And.BeOfType<EfUnitOfWork>();
+        }
+
+        [Fact]
+        public void AddEntityFrameworkBloggingServices_Adds_IBlogPostReadRepository_Implementation() {
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string> {
+                    ["ConnectionStrings:BloggingDatabase"] = "AddEntityFrameworkBloggingServices_Adds_IBlogPostRepository_Implementation"
+                })
+                .Build();
+
+            var foo = services
+                .AddEntityFrameworkBloggingServices(configuration)
+                .BuildServiceProvider()
+                .GetService<IBlogPostReadRepository>()
                 .Should().NotBeNull().And.BeOfType<BlogPostRepository>();
         }
 
         [Fact]
-        public void AddEntityFrameworkBloggingServices_Adds_IUserRepository_Implementation() {
+        public void AddEntityFrameworkBloggingServices_Adds_IUserReadRepository_Implementation() {
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string> {
                     ["ConnectionStrings:BloggingDatabase"] = "AddEntityFrameworkBloggingServices_Adds_IUserRepository_Implementation"
@@ -59,7 +75,7 @@ namespace CoreBlog.Data.EntityFramework.Tests {
             var foo = services
                 .AddEntityFrameworkBloggingServices(configuration)
                 .BuildServiceProvider()
-                .GetService<IUserRepository>()
+                .GetService<IUserReadRepository>()
                 .Should().NotBeNull().And.BeOfType<UserRepository>();
         }
     }
