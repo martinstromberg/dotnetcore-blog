@@ -24,8 +24,8 @@ namespace CoreBlog.Grains.Tests.Posts {
 
         [Fact]
         public void ToDataModel_ShouldTransferAllFields() {
-            var expectation = new IncomingBlogPost();
             var original = new BlogPost();
+            var expectation = new IncomingBlogPost();
 
             original.BlogPostId = expectation.BlogPostId = Guid.NewGuid();
             original.Title = expectation.Title = "Hello, world!";
