@@ -66,7 +66,6 @@ namespace CoreBlog.Grains.Tests.Posts {
                 "because we need to commit our changes");
 
             _unitOfWork.VerifyNoOtherCalls();
-
         }
     }
 }
