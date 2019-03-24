@@ -58,7 +58,8 @@ namespace CoreBlog.Data.EntityFramework {
 
         public void Reject() {
             var changes = _databaseContext.ChangeTracker.Entries()
-                .Where(c => c.State != EntityState.Unchanged && c.State != EntityState.Detached);
+                .Where(c => c.State != EntityState.Unchanged && c.State != EntityState.Detached)
+                .ToList();
 
             foreach (var change in changes) {
                 if (change.State == EntityState.Added) {

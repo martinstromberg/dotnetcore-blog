@@ -21,6 +21,8 @@ namespace CoreBlog.Data.EntityFramework.Users {
 
             entity.UserId = Guid.NewGuid();
 
+            entity.CopyTo(user);
+
             _databaseContext.Users.Add(entity);
         }
 
