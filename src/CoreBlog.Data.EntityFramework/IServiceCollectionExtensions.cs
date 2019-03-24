@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace CoreBlog.Data.EntityFramework {
+    using Abstractions;
     using Abstractions.Posts;
     using Posts;
     using Abstractions.Users;
@@ -29,8 +30,10 @@ namespace CoreBlog.Data.EntityFramework {
                         }
                     })
 
-                    .AddTransient<IBlogPostRepository, BlogPostRepository>()
-                    .AddTransient<IUserRepository, UserRepository>()
+                    .AddTransient<IUnitOfWork, EfUnitOfWork>()
+
+                    .AddTransient<IBlogPostReadRepository, BlogPostRepository>()
+                    .AddTransient<IUserReadRepository, UserRepository>()
                 ;
             }
     }
