@@ -6,7 +6,9 @@ namespace CoreBlog.GraphQL.Types {
             Name = "BlogPostInput";
 
             Field<StringGraphType>("title");
+
             Field<NonNullGraphType<StringGraphType>>("content");
+
             Field<NonNullGraphType<GuidGraphType>>("authorId");
         }
     }
