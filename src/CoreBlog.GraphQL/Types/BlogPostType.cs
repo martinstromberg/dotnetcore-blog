@@ -7,12 +7,19 @@ namespace CoreBlog.GraphQL.Types {
 
     public class BlogPostType : ObjectGraphType<BlogPost> {
         public BlogPostType(IUserService userService) {
-            Field<GuidGraphType>("id", resolve: context => Task.FromResult(context.Source.BlogPostId));
-            Field(post => post.Title);
-            Field(post => post.Content);
-            Field(post => post.Created);
-            Field<GuidGraphType>("authorId", resolve: context => Task.FromResult(context.Source.AuthorId));
-            Field<UserType>("author", resolve: context => userService.FindAsync(context.Source.AuthorId));
+            Field<NonNullGraphType<GuidGraphType>>("id", 
+                resolve: context => Task.FromResult(context.Source.BlogPostId));
+
+            Field("title", post => post.Title, true);
+
+            Field("content", post => post.Content);
+
+            Field< NonNullGraphType<DateTimeGraphType>>("created", resolve: context => context.Source.Created);
+
+            Field<NonNullGraphType<GuidGraphType>>("authorId", resolve: context => Task.FromResult(context.Source.AuthorId));
+
+            Field<NonNullGraphType<UserType>>("author", 
+                resolve: context => userService.FindAsync(context.Source.AuthorId));
         }
     }
 }
