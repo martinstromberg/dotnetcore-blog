@@ -1,6 +1,6 @@
 # dotnetcore-blog
 
-[![Build status](https://www-martinstromberg.visualstudio.com/dotnetcore-blog/_apis/build/status/Build%20&%20Test)](https://www-martinstromberg.visualstudio.com/dotnetcore-blog/_build/latest?definitionId=4)
+[![Build Status](https://www-martinstromberg.visualstudio.com/dotnetcore-blog/_apis/build/status/martinstromberg.dotnetcore-blog?branchName=master)](https://www-martinstromberg.visualstudio.com/dotnetcore-blog/_build/latest?definitionId=5&branchName=master)
 
 ## What's this project?
 
