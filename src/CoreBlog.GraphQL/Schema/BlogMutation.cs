@@ -1,40 +1,21 @@
-using GraphQL;
 using GraphQL.Types;
+using Microsoft.Extensions.Configuration;
 
 namespace CoreBlog.GraphQL.Schema {
     using GrainClientServices.Abstractions;
-    using GrainModels.Posts;
-    using Types;
 
-    public class BlogMutation : ObjectGraphType {
-        public BlogMutation(IBlogPostService blogService, IUserService userService) {
-            Field<BlogPostType>("createPost",
-                description: "Creates a new blog post.",
-                arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<BlogPostInputType>> { Name = "post"}
-                ),
-                resolve: context => {
-                    var post = context.GetArgument<BlogPost>("post");
+    public partial class BlogMutation : ObjectGraphType {
+        protected readonly IBlogPostService _blogPostService;
+        protected readonly IUserService _userService;
+        protected readonly IConfiguration _configuration;
 
-                    var task = blogService.CreatePost(post)
-                        .ContinueWith(createTask => {
-                            if (!createTask.IsCompletedSuccessfully) {
-                                throw new ExecutionError("Unable to create blog post");
-                            }
+        public BlogMutation(IBlogPostService blogService, IUserService userService, IConfiguration configuration) {
+            _blogPostService = blogService;
+            _userService = userService;
+            _configuration = configuration;
 
-                            return blogService.GetPostByIdAsync(createTask.Result);
-                        });
-
-                    task.Wait();
-
-                    if (!task.IsCompletedSuccessfully)
-                    {
-                        throw new ExecutionError("Unable to create blog post");
-                    }
-
-                    return task.Result;
-                }
-            );
+            SetupAuthenticationFields();
+            SetupPostFields();
         }
     }
 }

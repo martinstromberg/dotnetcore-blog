@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Orleans;
+using System;
 using System.Threading.Tasks;
 
 namespace CoreBlog.Grains.Users {
@@ -28,6 +29,19 @@ namespace CoreBlog.Grains.Users {
             entity.DisplayName = user.DisplayName;
 
             await _unitOfWork.Commit();
+
+            _userModel = await Find();
+        }
+
+        public async Task<bool> ValidatePassword(string password) {
+            var entity = await _unitOfWork.Users.Get(this.GetPrimaryKey());
+            
+            if (entity.PasswordFormat == 1) {
+                return StringComparer.InvariantCulture.Equals(password, entity.Password);
+            }
+
+            // TODO: Implement other stuff
+            return false;
         }
     }
 }

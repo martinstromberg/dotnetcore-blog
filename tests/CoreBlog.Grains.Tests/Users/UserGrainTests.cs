@@ -61,13 +61,11 @@ namespace CoreBlog.Grains.Tests.Users {
 
             stored.DisplayName.Should().Be(update.DisplayName);
 
-            _unitOfWork.Verify(u => u.Users.Get(stored.UserId), Times.AtMostOnce(),
-                "because need for fetch it 0 or 1 times");
-
             _unitOfWork.Verify(u => u.Commit(), Times.Once(),
                 "because we need to commit our changes");
-
-            _unitOfWork.VerifyNoOtherCalls();
         }
+
+        // No test here yet, code in grain is merely placeholder
+        //public void ValidatePassword_Should...
     }
 }

@@ -48,7 +48,8 @@ namespace CoreBlog.WebApi {
                 .AddGraphQL(options => {
                     options.ExposeExceptions = HostingEnvironment.IsDevelopment();
                 })
-                .AddGraphTypes(ServiceLifetime.Singleton);
+                .AddGraphTypes(ServiceLifetime.Singleton)
+                .AddUserContextBuilder<BlogUserContextBuilder>();
 
             // Add Orleans
             services.AddSingleton<IClusterClient>(provider => {

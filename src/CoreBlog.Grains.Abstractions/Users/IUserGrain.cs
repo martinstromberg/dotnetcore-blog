@@ -8,5 +8,7 @@ namespace CoreBlog.Grains.Abstractions.Users
         Task<User> Find();
 
         Task Update(User user);
+
+        Task<bool> ValidatePassword(string password);
     }
 }

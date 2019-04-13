@@ -10,6 +10,9 @@ namespace CoreBlog.Data.Abstractions.Users {
             destination.UserId = source.UserId;
             destination.DisplayName = source.DisplayName;
             destination.EmailAddress = source.EmailAddress;
+            destination.Password = source.Password;
+            destination.PasswordFormat = source.PasswordFormat;
+            destination.PasswordUpdated = source.PasswordUpdated;
 
             return destination;
         }
