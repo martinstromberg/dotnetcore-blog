@@ -15,6 +15,7 @@ namespace CoreBlog.GraphQL {
             services.AddSingleton<BlogPostInputType>();
 
             services.AddSingleton<UserType>();
+            services.AddSingleton<TokenType>();
 
             // Query & Mutation
             services.AddSingleton<BlogQuery>();

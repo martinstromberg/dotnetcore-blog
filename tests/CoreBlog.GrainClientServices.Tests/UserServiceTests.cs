@@ -66,5 +66,192 @@ namespace CoreBlog.GrainClientServices.Tests {
             _clusterClient.VerifyNoOtherCalls();
             postGrain.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public void ValidateCredentials_ShouldLookUpUserIdByEmailAddress()
+        {
+            const string emailAddress = "username@host.local";
+            const string password = "changeme";
+
+            var repository = new Mock<IUserRepositoryGrain>();
+
+            _clusterClient
+                .Setup(c => c.GetGrain<IUserRepositoryGrain>(0, null))
+                .Returns(repository.Object);
+
+            repository
+                .Setup(r => r.GetUserIdByEmailAddress(emailAddress))
+                .Returns(Task.FromResult(Guid.Empty));
+
+            _userService.ValidateCredentials(emailAddress, password).Wait();
+
+            _clusterClient.Verify(c => c.GetGrain<IUserRepositoryGrain>(0, null), Times.Once);
+
+            repository.Verify(r => r.GetUserIdByEmailAddress(emailAddress), Times.Once);
+
+            repository.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public void ValidateCredentials_ShouldReturnNullIfUserIdIsEmpty()
+        {
+            const string emailAddress = "username@host.local";
+            const string password = "changeme";
+
+            var repository = new Mock<IUserRepositoryGrain>();
+
+            _clusterClient
+                .Setup(c => c.GetGrain<IUserRepositoryGrain>(0, null))
+                .Returns(repository.Object);
+
+            repository
+                .Setup(r => r.GetUserIdByEmailAddress(emailAddress))
+                .Returns(Task.FromResult(Guid.Empty));
+
+            _userService.ValidateCredentials(emailAddress, password)
+                .GetAwaiter().GetResult()
+
+                .Should().BeNull();
+
+            _clusterClient.Verify(c => c.GetGrain<IUserRepositoryGrain>(0, null), Times.Once);
+
+            repository.Verify(r => r.GetUserIdByEmailAddress(emailAddress), Times.Once);
+
+            repository.VerifyNoOtherCalls();
+        }
+
+        [Fact] public void ValidateCredentials_ShouldCallValidateOnUserGrain()
+        {
+            var userId = Guid.NewGuid();
+            const string emailAddress = "username@host.local";
+            const string password = "changeme";
+
+            var repository = new Mock<IUserRepositoryGrain>();
+            var user = new Mock<IUserGrain>();
+
+            _clusterClient
+                .Setup(c => c.GetGrain<IUserRepositoryGrain>(0, null))
+                .Returns(repository.Object);
+
+            _clusterClient
+                .Setup(c => c.GetGrain<IUserGrain>(userId, null))
+                .Returns(user.Object);
+
+            repository
+                .Setup(r => r.GetUserIdByEmailAddress(emailAddress))
+                .Returns(Task.FromResult(userId));
+
+            user
+                .Setup(u => u.ValidatePassword(password))
+                .Returns(Task.FromResult(true));
+
+            _userService.ValidateCredentials(emailAddress, password).Wait();
+
+            _clusterClient.Verify(c => c.GetGrain<IUserRepositoryGrain>(0, null), Times.Once);
+
+            _clusterClient.Verify(c => c.GetGrain<IUserGrain>(userId, null), Times.Once);
+
+            repository.Verify(r => r.GetUserIdByEmailAddress(emailAddress), Times.Once);
+
+            user.Verify(u => u.ValidatePassword(password), Times.Once);
+
+            _clusterClient.VerifyNoOtherCalls();
+            repository.VerifyNoOtherCalls();
+        }
+
+        [Fact] public void ValidateCredentials_ShouldReturnNullIfValidationFailed()
+        {
+            var userId = Guid.NewGuid();
+            const string emailAddress = "username@host.local";
+            const string password = "changeme";
+
+            var repository = new Mock<IUserRepositoryGrain>();
+            var user = new Mock<IUserGrain>();
+
+            _clusterClient
+                .Setup(c => c.GetGrain<IUserRepositoryGrain>(0, null))
+                .Returns(repository.Object);
+
+            _clusterClient
+                .Setup(c => c.GetGrain<IUserGrain>(userId, null))
+                .Returns(user.Object);
+
+            repository
+                .Setup(r => r.GetUserIdByEmailAddress(emailAddress))
+                .Returns(Task.FromResult(userId));
+
+            user
+                .Setup(u => u.ValidatePassword(password))
+                .Returns(Task.FromResult(false));
+
+            _userService.ValidateCredentials(emailAddress, password)
+                .GetAwaiter().GetResult()
+                
+                .Should().BeNull();
+
+            _clusterClient.Verify(c => c.GetGrain<IUserRepositoryGrain>(0, null), Times.Once);
+
+            _clusterClient.Verify(c => c.GetGrain<IUserGrain>(userId, null), Times.Once);
+
+            repository.Verify(r => r.GetUserIdByEmailAddress(emailAddress), Times.Once);
+
+            user.Verify(u => u.ValidatePassword(password), Times.Once);
+
+            _clusterClient.VerifyNoOtherCalls();
+            repository.VerifyNoOtherCalls();
+        }
+
+        [Fact] public void ValidateCredentials_ShouldReturnUserIfValidationSucceeded()
+        {
+            var userId = Guid.NewGuid();
+            const string emailAddress = "username@host.local";
+            const string password = "changeme";
+
+            var userObject = new User {
+                UserId = userId,
+                EmailAddress = emailAddress
+            };
+
+            var repository = new Mock<IUserRepositoryGrain>();
+            var user = new Mock<IUserGrain>();
+
+            _clusterClient
+                .Setup(c => c.GetGrain<IUserRepositoryGrain>(0, null))
+                .Returns(repository.Object);
+
+            _clusterClient
+                .Setup(c => c.GetGrain<IUserGrain>(userId, null))
+                .Returns(user.Object);
+
+            repository
+                .Setup(r => r.GetUserIdByEmailAddress(emailAddress))
+                .Returns(Task.FromResult(userId));
+
+            user
+                .Setup(u => u.ValidatePassword(password))
+                .Returns(Task.FromResult(true));
+
+            user
+                .Setup(u => u.Find())
+                .Returns(Task.FromResult(userObject));
+
+            _userService.ValidateCredentials(emailAddress, password)
+                .GetAwaiter().GetResult()
+
+                .Should().Be(userObject);
+
+            _clusterClient.Verify(c => c.GetGrain<IUserRepositoryGrain>(0, null), Times.Once);
+
+            _clusterClient.Verify(c => c.GetGrain<IUserGrain>(userId, null), Times.Once);
+
+            repository.Verify(r => r.GetUserIdByEmailAddress(emailAddress), Times.Once);
+
+            user.Verify(u => u.ValidatePassword(password), Times.Once);
+            user.Verify(u => u.Find(), Times.Once);
+
+            _clusterClient.VerifyNoOtherCalls();
+            repository.VerifyNoOtherCalls();
+            user.VerifyNoOtherCalls();
+        }
     }
 }

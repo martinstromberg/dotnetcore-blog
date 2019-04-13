@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using FluentAssertions;
 using GraphQL.Language.AST;
-using GraphQL.Types;
 using Xunit;
 
 namespace CoreBlog.GraphQL.Tests {

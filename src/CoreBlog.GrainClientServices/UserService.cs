@@ -27,5 +27,22 @@ namespace CoreBlog.GrainClientServices {
         public Task<IEnumerable<User>> Query() {
             return null;
         }
+
+        public async Task<User> ValidateCredentials(string emailAddress, string password) {
+            var userId = await _clusterClient.GetGrain<IUserRepositoryGrain>(0)
+                .GetUserIdByEmailAddress(emailAddress);
+
+            if (userId == Guid.Empty) {
+                return null;
+            }
+
+            var userGrain = _clusterClient.GetGrain<IUserGrain>(userId);
+
+            if (!await userGrain.ValidatePassword(password)) {
+                return null;
+            }
+
+            return await userGrain.Find();
+        }
     }
 }

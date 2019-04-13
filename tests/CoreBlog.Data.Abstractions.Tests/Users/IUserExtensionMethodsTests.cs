@@ -9,6 +9,9 @@ namespace CoreBlog.Data.Abstractions.Tests.Posts {
             public Guid UserId { get; set; }
             public string EmailAddress { get; set; }
             public string DisplayName { get; set; }
+            public string Password { get; set; }
+            public byte PasswordFormat { get; set; }
+            public DateTime PasswordUpdated { get; set; }
         }
 
         [Fact]
@@ -16,7 +19,10 @@ namespace CoreBlog.Data.Abstractions.Tests.Posts {
             var original = new TestUser {
                 UserId = Guid.NewGuid(),
                 DisplayName = "Joe Smith",
-                EmailAddress = "user@host.tld"
+                EmailAddress = "user@host.tld",
+                Password = "changeme",
+                PasswordFormat = 1,
+                PasswordUpdated = new DateTime(2014, 7, 3)
             };
 
             original.CopyTo(new TestUser()).Should().BeEquivalentTo(original, "otherwise we're missing fields");

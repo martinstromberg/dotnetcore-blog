@@ -8,5 +8,11 @@ namespace CoreBlog.Grains.Users {
         public string EmailAddress { get; set; }
 
         public string DisplayName { get; set; }
+
+        public string Password { get; set; }
+
+        public byte PasswordFormat { get; set; }
+
+        public DateTime PasswordUpdated { get; set; }
     }
 }

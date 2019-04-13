@@ -12,7 +12,7 @@ namespace CoreBlog.Data.EntityFramework.Users {
 
         public string Password { get; set; }
 
-        public byte PasswordFormat { get; set; } // 1 = ClearText, 2 = Hash+Salt, 3 = External crypto
+        public byte PasswordFormat { get; set; }
 
         public DateTime PasswordUpdated { get; set; }
 

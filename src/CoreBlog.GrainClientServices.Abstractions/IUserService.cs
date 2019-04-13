@@ -10,5 +10,7 @@ namespace CoreBlog.GrainClientServices.Abstractions {
         Task<User> FindAsync(Guid id);
 
         Task<IEnumerable<User>> Query();
+
+        Task<User> ValidateCredentials(string emailAddress, string password);
     }
 }
